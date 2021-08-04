@@ -1,3 +1,7 @@
+# mpg2wav (development version)
+
+* Added support for GitHub
+
 # mpg2wav 0.0.0.9000
 
 * Added basic dev infrastructure

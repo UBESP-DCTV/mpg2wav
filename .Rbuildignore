@@ -4,5 +4,7 @@
 ^\.Rproj\.user$
 ^dev$
 ^README\.Rmd$
+^\.github$
 ^CODE_OF_CONDUCT\.md$
 ^LICENSE\.md$
+^\.lintr$
