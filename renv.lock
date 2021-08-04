@@ -62,6 +62,13 @@
       "Repository": "RSPM",
       "Hash": "e8a22846fff485f0be3770c2da758713"
     },
+    "av": {
+      "Package": "av",
+      "Version": "0.6.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "7b9f9e6c30a4f3bb0edc1f4cba3fe84b"
+    },
     "backports": {
       "Package": "backports",
       "Version": "1.2.1",
