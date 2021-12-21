@@ -16,7 +16,9 @@ usethis::use_package("<new.package.used.in.the.function>")
 
 
 # Test your functions
-usethis::use_test("<function_name>")
+basename(usethis::use_test("mp4_to_wav_safe")) |> usethis::use_r()
+basename(usethis::use_test("run")) |> usethis::use_r()
+basename(usethis::use_test("wav_to_txt_safe")) |> usethis::use_r()
 # press "`CTRL` + `SHIFT` + T" to run all the tests.
 #
 # If you like, take advantage of {autotestthat} to automatically run
