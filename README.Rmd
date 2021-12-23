@@ -30,15 +30,14 @@ You can install the development version of `{mpg2wav}` from [GitHub](https://git
 remotes::install.packages("UBESP-DCTV/mpg2wav")
 ```
 
-## Example
+## Setup
 
-This is a basic example which shows you how to solve a common problem:
-
-```{r example, eval=FALSE}
-library(mpg2wav)
-## basic example code
-```
-
+1. Install [NODE.js](https://nodejs.org/en/download/)
+2. install install microsoft-cognitiveservices-speech-sdk
+   - Open powershell as admin
+   - run `npm install microsoft-cognitiveservices-speech-sdk`
+   
+   
 ## Code of Conduct
 
 Please note that the mpg2wav project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
