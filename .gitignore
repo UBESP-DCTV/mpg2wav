@@ -2,3 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
+
+dev/output/
+
+dev/data-raw/20201106_Verbale2.wav
+
+dev/speechFileToText/

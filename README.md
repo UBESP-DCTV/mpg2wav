@@ -21,14 +21,14 @@ You can install the development version of `{mpg2wav}` from
 remotes::install.packages("UBESP-DCTV/mpg2wav")
 ```
 
-## Example
+## Setup
 
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(mpg2wav)
-## basic example code
-```
+1.  Install [NODE.js](https://nodejs.org/en/download/) - restart the
+    machine
+2.  install install microsoft-cognitiveservices-speech-sdk
+    -   Open powershell as admin
+    -   run `npm install microsoft-cognitiveservices-speech-sdk`
+    -   follow possible required instructions
 
 ## Code of Conduct
 
