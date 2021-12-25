@@ -31,9 +31,9 @@
 wav_to_txt_safe <- purrr::safely(function(
   .input,
   .output  = fs::file_temp("text", ext = "txt"),
-  p = progressr::progressor()
+  pb = progressr::progressor()
 ){
-  p(message = paste0("processing ", basename(.input)))
+  pb(message = paste0(basename(.input), " to txt"))
 
   aux_prog <- withr::local_file("index_aux.js")
 
@@ -55,18 +55,3 @@ wav_to_txt_safe <- purrr::safely(function(
 
   .output
 })
-
-# pp <- function(p = progressr::progressor(2)) {
-#   Sys.sleep(1)
-#   p(message = paste0("processing ", basename(.input)))
-#   Sys.sleep(1)
-#   p(message = paste0("processing ", basename(.input)))
-#   Sys.sleep(1)
-#   p(message = paste0("processing ", basename(.input)))
-#   Sys.sleep(1)
-# }
-#
-# progressr::with_progress(
-#   pp()
-# )
-

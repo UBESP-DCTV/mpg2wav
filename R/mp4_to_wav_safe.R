@@ -2,7 +2,7 @@
 #'
 #' @param .input (chr) mp4 input's path
 #' @param .output (chr) wav output's path
-#' @param p a [progressor][progressr::progressor] (optional)
+#' @param pb a [progressor][progressr::progressor] (optional)
 #'
 #' @return Wav [.output] path
 #' @keywords internal
@@ -31,9 +31,9 @@
 mp4_to_wav_safe <- purrr::safely(function(
   .input,
   .output = fs::file_temp("audio", ext = "wav"),
-  p = progressr::progressor()
+  pb = progressr::progressor()
 ) {
-  p(message = paste0("processing ", basename(.input)))
+  pb(message = paste0(basename(.input), " to wav"))
 
   info <- av::av_media_info(.input)[["video"]]
   duration_s <- ceiling(info[["frames"]] / info[["framerate"]])
@@ -46,6 +46,5 @@ mp4_to_wav_safe <- purrr::safely(function(
     total_time = duration_s,
     verbose = FALSE
   )
-
   .output
 })

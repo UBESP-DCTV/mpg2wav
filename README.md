@@ -23,10 +23,12 @@ remotes::install.packages("UBESP-DCTV/mpg2wav")
 
 ## Setup
 
-1.  Install [NODE.js](https://nodejs.org/en/download/)
+1.  Install [NODE.js](https://nodejs.org/en/download/) - restart the
+    machine
 2.  install install microsoft-cognitiveservices-speech-sdk
     -   Open powershell as admin
     -   run `npm install microsoft-cognitiveservices-speech-sdk`
+    -   follow possible required instructions
 
 ## Code of Conduct
 
