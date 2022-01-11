@@ -65,11 +65,13 @@ Files will be not deleated, but the process restarts owerwriting them."
       list(video_todo, outputs_wav, outputs_txt),
       ~ {
         present <- fs::file_exists(..3)
-        done <- processed |>
+        current_processed <- processed |>
           dplyr::filter(
-            folder == dirname(..3),
+            stringr::str_remove(folder, "^[A-Z]://") ==
+              stringr::str_remove(dirname(..3), "^[A-Z]://"),
             text == basename(..3)
-          ) |>
+          )
+        done <- current_processed |>
           purrr::pluck("done") |>
           as.logical() |>  # it is 1 in sqlite
           isTRUE()  # considering NULL if not present, FALSE if errored
@@ -101,6 +103,9 @@ Files will be not deleated, but the process restarts owerwriting them."
         if (!present && done) {
           usethis::ui_warn("{usethis::ui_value(..3)} results done but missing")
           usethis::ui_info("{usethis::ui_value(..3)} will re-evaluated now")
+          real_processed <- processed |>
+            dplyr::anti_join(current_processed)
+          DBI::dbWriteTable(con, "videos", real_processed, overwrite = TRUE)
         }
 
         is_online <- function() {
@@ -123,9 +128,14 @@ Files will be not deleated, but the process restarts owerwriting them."
 
         if (!is_online()) ui_stop("Internet connection lost.")
 
-        res <- mp4_to_wav_safe(..1, ..2, pb = pb) |>
-          purrr::pluck("result") |>
-          wav_to_txt_safe(..3, pb = pb)
+        wav <- if (fs::file_exists(..2)) {
+          pb(message = paste0(basename(..1), " to wav"))
+          ..2
+        } else {
+          mp4_to_wav_safe(..1, ..2, pb = pb) |>
+            purrr::pluck("result")
+        }
+        res <- wav |> wav_to_txt_safe(..3, pb = pb)
 
         # if at this time internet is lost it possible caused some
         # undetected error in the evaluation, maybe even a non completed

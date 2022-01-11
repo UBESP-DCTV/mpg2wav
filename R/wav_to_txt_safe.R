@@ -44,7 +44,7 @@ wav_to_txt_safe <- purrr::safely(function(
       paste0("var filename = \"", .input, "\";")
     ) |>
     stringr::str_replace_all(
-      "fs.writeFileSync\\(\".*\", tempText\\);",
+      "fs.writeFileSync\\(.*, tempText\\);",
       paste0(
         'fs.writeFileSync("', .output, '", tempText);'
       )

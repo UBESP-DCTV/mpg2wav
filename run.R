@@ -20,7 +20,7 @@ list.files(here("R"), pattern = "\\.R$", full.names = TRUE) |>
 # Data ------------------------------------------------------------
 
 videos <- list.files(
-  path = "D:/",
+  path = "E:/",
   full.names = TRUE,
   recursive = TRUE,
   pattern = "\\.mp4$",
@@ -32,7 +32,7 @@ videos <- list.files(
 with_progress({
   freshstart <- FALSE
 
-  db_name <- "D:/transcripts.sqlite"
+  db_name <- "E:/transcripts.sqlite"
   is_db_there <- fs::file_exists(db_name) &&
     fs::file_info(db_name)[["size"]]
 
