@@ -105,7 +105,21 @@ Files will be not deleated, but the process restarts owerwriting them."
           usethis::ui_info("{usethis::ui_value(..3)} will re-evaluated now")
           real_processed <- processed |>
             dplyr::anti_join(current_processed)
-          DBI::dbWriteTable(con, "videos", real_processed, overwrite = TRUE)
+          DBI::dbWriteTable(
+            con,
+            "videos",
+            real_processed,
+            overwrite = TRUE,
+            field.types = c(
+              id = "INTEGER PRIMARY KEY, -- Autoincrement",
+              timestamp = "TIMESTAMP",
+              folder = "TEXT",
+              video = "INTEGER",
+              audio = "INTEGER",
+              text = "INTEGER",
+              done = "LOGICAL"
+            )
+          )
         }
 
         is_online <- function() {
@@ -128,19 +142,36 @@ Files will be not deleated, but the process restarts owerwriting them."
 
         if (!is_online()) ui_stop("Internet connection lost.")
 
-        wav <- if (fs::file_exists(..2)) {
+        wav_raw <- if (fs::file_exists(..2)) {
           pb(message = paste0(basename(..1), " to wav"))
-          ..2
+          tibble::tibble(
+            result = ..2,
+            error = NULL
+          )
         } else {
-          mp4_to_wav_safe(..1, ..2, pb = pb) |>
-            purrr::pluck("result")
+          mp4_to_wav_safe(..1, ..2, pb = pb)
         }
-        res <- wav |> wav_to_txt_safe(..3, pb = pb)
 
-        # if at this time internet is lost it possible caused some
-        # undetected error in the evaluation, maybe even a non completed
-        # transcription.
-        if (is.null(res[["error"]]) && curl::has_internet()) {
+        wav_err <- wav_raw[["error"]]
+
+        if (!is.null(wav_err)) {
+          usethis::ui_warn("Error extracting wav: {wav_err}")
+          usethis::ui_info("Skipping text conversion")
+          pb(message = paste(basename(..2), " to txt SKIPPED"))
+          return(tibble::tibble(
+            result = NULL,
+            error = wav_err
+          ))
+        } else {
+          wav <- wav_raw[["result"]]
+        }
+
+        res <- wav |> wav_to_txt_safe(..3, pb = pb)
+        res_err <- res[["error"]]
+
+        if (!is.null(res_err)) {
+          usethis::ui_warn("An error is produced: {res[['error']]}")
+        } else if (curl::has_internet()) {
           tbl <- tibble::tibble(
             timestamp = lubridate::now(),
             folder = dirname(..3),
@@ -150,6 +181,15 @@ Files will be not deleated, but the process restarts owerwriting them."
             done = TRUE
           )
           DBI::dbWriteTable(con, "videos", tbl, append = TRUE)
+        } else {
+          # if at this time internet is lost it possible caused some
+          # undetected error in the evaluation, maybe even a non completed
+          # transcription.
+          usethis::ui_warn("Connection lost before writing db, computation skipped")
+          return(tibble::tibble(
+            result = NULL,
+            error = "Connection lost during computation"
+          ))
         }
 
         res
