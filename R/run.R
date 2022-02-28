@@ -17,7 +17,7 @@
 #' }
 #'
 #'
-run <- function(videos, con, table, restart_from_skratch = FALSE) {
+run <- function(videos, con, table = "videos", restart_from_skratch = FALSE) {
   stopifnot(length(videos) != 0L)
   stopifnot(DBI::dbIsValid(con))
 
@@ -67,14 +67,23 @@ Files will be not deleated, but the process restarts owerwriting them."
         present <- fs::file_exists(..3)
         current_processed <- processed |>
           dplyr::filter(
-            stringr::str_remove(folder, "^[A-Z]://") ==
-              stringr::str_remove(dirname(..3), "^[A-Z]://"),
+            stringr::str_remove(folder, "^[A-Z]://?") ==
+              stringr::str_remove(dirname(..3), "^[A-Z]://?"),
             text == basename(..3)
           )
-        done <- current_processed |>
+        done_tmp <- current_processed |>
           purrr::pluck("done") |>
-          as.logical() |>  # it is 1 in sqlite
+          as.logical()  # it is 1 in sqlite
+
+
+        done <- unique(done_tmp) |>
           isTRUE()  # considering NULL if not present, FALSE if errored
+
+        if (length(done_tmp) > 1L) {
+          usethis::ui_warn(
+            "{usethis::ui_value(..3)} has multiple entries in the sqlite."
+          )
+        }
 
         if (present && !done) {
           cat("\n")

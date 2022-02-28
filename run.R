@@ -26,7 +26,8 @@ videos <- list.files(
   pattern = "\\.mp4$",
   ignore.case = TRUE,
   no.. = TRUE
-)
+) |>
+  stringr::str_subset("^.*/\\..*$", negate = TRUE)
 
 # Run -------------------------------------------------------------
 with_progress({
