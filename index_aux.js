@@ -16,7 +16,7 @@
   // through the speech recognizer.
   var subscriptionKey = "30b19d65c6b24a4b846419418427b39f";
   var serviceRegion = "westeurope"; // e.g., "westus"
-  var filename = "E://Archivio Master UBEP/Masters 2017/Biostatistica avanzata per la ricerca clinica/Modulo4_Berchialla/Week 15/BAM3W15_L2_PB.wav"; // 16000 Hz, Mono
+  var filename = "F://Archivio Master UBEP/Masters 2016/Biostatistica avanzata per la ricerca clinica/Modulo2_Berchialla/Week 6/BAM2W6_L2_PB.wav"; // 16000 Hz, Mono
   var tempText = '';
   
   // create the push stream we need for the speech sdk.
@@ -80,7 +80,7 @@
           
           
       }
-      fs.writeFileSync("E://Archivio Master UBEP/Masters 2017/Biostatistica avanzata per la ricerca clinica/Modulo4_Berchialla/Week 15/BAM3W15_L2_PB-MS_COGNITIVE_ELABORATED.txt", tempText);
+      fs.writeFileSync("F://Archivio Master UBEP/Masters 2016/Biostatistica avanzata per la ricerca clinica/Modulo2_Berchialla/Week 6/BAM2W6_L2_PB-MS_COGNITIVE_ELABORATED.txt", tempText);
       //recognizer.stopContinuousRecognitionAsync();
    };
 

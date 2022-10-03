@@ -41,6 +41,8 @@ Files will be not deleated, but the process restarts owerwriting them."
   }
 
   processed <- DBI::dbReadTable(con, "videos")
+  # videos <- setdiff(videos, file.path(processed$folder, processed$video))
+
   n_videos <- length(videos)
   usethis::ui_info("There are {n_videos} videos to process.")
   res <- vector("list", length = n_videos)
@@ -60,7 +62,7 @@ Files will be not deleated, but the process restarts owerwriting them."
       message = "Starting...",
       scale = 2,
       offset = 1
-)
+    )
     res[which(todo)] <- purrr::pmap(
       list(video_todo, outputs_wav, outputs_txt),
       ~ {
@@ -90,10 +92,20 @@ Files will be not deleated, but the process restarts owerwriting them."
           usethis::ui_warn("
             {usethis::ui_value(..3)} is on disk but not marked as done."
           )
+          if (usethis::ui_nope("Do you want to delete it from disk?")) {
+            usethis::ui_warn(
+              "Cannot process further this file, please fix the issue."
+            )
+            usethis::io_info(
+              "{usethis::ui_value(basename(..3))} skipped."
+            )
+            next
+          }
           usethis::ui_todo(
             "deleting {usethis::ui_value(basename(..3))}"
           )
           fs::file_delete(..3)
+          present <- FALSE
           usethis::ui_done(
             "{usethis::ui_value(basename(..3))} deleted."
           )
