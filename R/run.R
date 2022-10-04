@@ -41,7 +41,14 @@ Files will be not deleated, but the process restarts owerwriting them."
   }
 
   processed <- DBI::dbReadTable(con, "videos")
-  # videos <- setdiff(videos, file.path(processed$folder, processed$video))
+  drive <- str_sub(videos[[1]], 1, 4)
+  videos <- paste0(
+    drive,
+    setdiff(
+      stringr::str_remove(videos, "^[A-Z]://?"),
+      file.path(processed$folder, processed$video)
+    )
+  )
 
   n_videos <- length(videos)
   usethis::ui_info("There are {n_videos} videos to process.")
@@ -66,11 +73,11 @@ Files will be not deleated, but the process restarts owerwriting them."
     res[which(todo)] <- purrr::pmap(
       list(video_todo, outputs_wav, outputs_txt),
       ~ {
+
         present <- fs::file_exists(..3)
         current_processed <- processed |>
           dplyr::filter(
-            stringr::str_remove(folder, "^[A-Z]://?") ==
-              stringr::str_remove(dirname(..3), "^[A-Z]://?"),
+            folder == stringr::str_remove(dirname(..3), "^[A-Z]://?"),
             text == basename(..3)
           )
         done_tmp <- current_processed |>
@@ -175,6 +182,7 @@ Files will be not deleated, but the process restarts owerwriting them."
 
         wav_err <- wav_raw[["error"]]
 
+
         if (!is.null(wav_err)) {
           usethis::ui_warn("Error extracting wav: {wav_err}")
           usethis::ui_info("Skipping text conversion")
@@ -187,7 +195,9 @@ Files will be not deleated, but the process restarts owerwriting them."
           wav <- wav_raw[["result"]]
         }
 
-        res <- wav |> wav_to_txt_safe(..3, pb = pb)
+
+        res <- wav |>
+          wav_to_txt_safe(..3, pb = pb)
         res_err <- res[["error"]]
 
         if (!is.null(res_err)) {
@@ -195,7 +205,7 @@ Files will be not deleated, but the process restarts owerwriting them."
         } else if (curl::has_internet()) {
           tbl <- tibble::tibble(
             timestamp = lubridate::now(),
-            folder = dirname(..3),
+            folder =stringr::str_remove(dirname(..3), "^[A-Z]://?"),
             video = basename(..1),
             audio = basename(..2),
             text = basename(..3),
